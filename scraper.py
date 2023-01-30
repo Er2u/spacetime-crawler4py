@@ -1,5 +1,8 @@
 import re, hashlib
+from utils.config import Config
+from utils.download import download
 from urllib.parse import urlparse
+from configparser import ConfigParser
 from bs4 import BeautifulSoup
 
 
@@ -8,13 +11,15 @@ fingerprints = set()  # Set to keep track of page content fingerprints
 content_length_threshold = 1048576*1024 # 1GB
 
 
-def scraper(url: str, resp: utils.response.Response):
+def scraper(url, resp):
     links = extract_next_links(url, resp)
     return [link for link in links if is_valid(link, resp)]
 
 
 def extract_next_links(url, resp):
-    soup = BeautifulSoup(resp.content, 'html.parser')
+    if resp.raw_response == None:
+        return []
+    soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
     links = []
     for link in soup.find_all('a'):
         href = link.get('href')
@@ -23,13 +28,13 @@ def extract_next_links(url, resp):
     return links
 
 
-def is_valid(url, resp):
+def is_valid(url,resp):
     # Decide whether to crawl this url or not. 
     # If you decide to crawl it, return True; otherwise return False.
     # There are already some conditions that return False.
     try:
         parsed = urlparse(url)
-        
+
         if parsed.scheme not in set(["http", "https"]):
             return False
         # Check if URL has already been visited
@@ -53,11 +58,11 @@ def is_valid(url, resp):
         # Check if page has already been visited (using fingerprinting)
         if parsed.netloc in visited_content_hashes:
             return False
-        # Check if URL is dead (status code is 200 and content length is 0)
-        if resp.status == 200 and len(resp.raw_response.content) == 0:
+        # Check if URL is dead (status code is 200)
+        if resp.status == 200:
             return False
         # Check if page has no content or too much content
-        if len(resp.content) == 0 or len(resp.content) > content_length_threshold:
+        if len(resp.raw_response.content) == 0 or len(resp.raw_response.content) > content_length_threshold:
             return False
         # Add visited urls
         visited_urls.add(parsed.netloc)
