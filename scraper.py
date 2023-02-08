@@ -98,7 +98,9 @@ def is_valid(url,resp):
         all_tokens = tokenize(content=processed_contnet)
         page_length[url] = len(all_tokens)
         computeWordFrequencies(tokens=all_tokens, tokenMap=global_tokenMap)
-        
+        for word in global_tokenMap:
+            if word in stopwords:
+                global_tokenMap.pop(word)
         # keep the data  and  generate extra log than can be used for the report
         visited_urls_file = open('visited_urls_file', 'w')
         visited_urls_file.write(str(visited_urls))
