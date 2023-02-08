@@ -135,7 +135,6 @@ def is_valid(url,resp):
             for page in page_length:
                 if subdomain in page:
                     z[subdomain] = z[subdomain] + 1
-        sorted_subdomains = sorted(z.items(),lambda x: x[0])
         scraper.log.write(sorted(z.items(),lambda x: x[0]))
         scraper_log.close()
         return True
