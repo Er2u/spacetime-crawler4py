@@ -130,11 +130,18 @@ def is_valid(url,resp):
         scraper_log.write("The domains in alphabetical order are as follows \n")
         z = {}
         #visited_urls_dict = {subdomain:0 for subdomain in url for page in page_length if subdomain not in page else subdomain:visited_urls_dict[subdomain] + 1}
-        for subdomain in visited_urls:
-            z[subdomain] = 0
-            for page in page_length:
-                if subdomain in page:
-                    z[subdomain] = z[subdomain] + 1
+        pattern = "[/]+\S+\."
+        for page in page_length:
+            subdomain_array = re.findall(pattern,page)
+            if subdomain_array[0] not in z:
+                z[subdomain_array[0]] = 1
+            else:
+                z[subdomain_array[0]] = z[subdomain_array[0]] + 1
+        #for subdomain in visited_urls:
+            #z[subdomain] = 0
+            #for page in page_length:
+                #if subdomain in page:
+                    #z[subdomain] = z[subdomain] + 1
         scraper.log.write(sorted(z.items(),lambda x: x[0]))
         scraper_log.close()
         return True
