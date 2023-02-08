@@ -127,6 +127,16 @@ def is_valid(url,resp):
         subdomain_num = len([1 for item in visited_urls if 'ics.uci.edu' in item])
         scraper_log.write("The number of subdomains of ics.uci.edu: " + str(subdomain_num) + "\n")    #this may be changed since we can use Regular Expression
         scraper_log.write("\n")
+        scraper_log.write("The domains in alphabetical order are as follows \n")
+        z = {}
+        #visited_urls_dict = {subdomain:0 for subdomain in url for page in page_length if subdomain not in page else subdomain:visited_urls_dict[subdomain] + 1}
+        for subdomain in visited_urls:
+            z[subdomain] = 0
+            for page in page_length:
+                if subdomain in page:
+                    z[subdomain] = z[subdomain] + 1
+        sorted_subdomains = sorted(z.items(),lambda x: x[0])
+        scraper.log.write(sorted(z.items(),lambda x: x[0]))
         scraper_log.close()
         return True
         
