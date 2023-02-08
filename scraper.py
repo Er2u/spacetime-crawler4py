@@ -51,11 +51,12 @@ def extract_next_links(url, resp):
     if resp.raw_response == None:
         return []
     soup = BeautifulSoup(resp.raw_response.content, 'html.parser')
-    links = []
-    for link in soup.find_all('a'):
-        href = link.get('href')
-        if href:
-            links.append(href)
+    links = [link.get('href') for link in soup.find_all('a') if link.get('href') == True]
+    #links = []
+    #for link in soup.find_all('a'):
+        #href = link.get('href')
+        #if href:
+            #links.append(href)
     return links
 
 
