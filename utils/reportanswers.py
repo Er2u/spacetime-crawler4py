@@ -1,3 +1,4 @@
+#find out what we need to import to get answers for report
  def organizer(URL_array):
   words_per_page = {}
   for url in URL_array:
